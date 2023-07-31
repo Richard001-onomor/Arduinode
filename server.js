@@ -100,9 +100,18 @@ const sensorDataSchema = new mongoose.Schema({
 // Create Mongoose model
 const SensorData = mongoose.model('SensorData', sensorDataSchema);
 
+// Middleware for HTTP to HTTPS redirection
+app.use((req, res, next) => {
+  if (req.protocol === 'http') {
+    return res.redirect(301, `https://${req.headers.host}${req.url}`);
+  }
+  next();
+});
+
 // Connect to MongoDB using the dbConnect function
 dbConnect()
   .then(() => {
+    
     // POST endpoint to receive sensor data
     app.post('/sensor-data', (req, res) => {
       // Extract the sensor data from the request body
